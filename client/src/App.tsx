@@ -21,7 +21,6 @@ function Header() {
       </header>
 
       {/* Tab Navigation */}
-      <div className="bg-white border-b border-gray-200">
         <div className="max-w-4xl mx-auto px-6">
           <nav className="flex space-x-8" aria-label="Tabs">
             <Link href="/">
@@ -52,7 +51,6 @@ function Header() {
             </Link>
           </nav>
         </div>
-      </div>
     </>
   );
 }
