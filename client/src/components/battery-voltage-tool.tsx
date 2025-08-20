@@ -57,7 +57,7 @@ export default function BatteryVoltageTool() {
       { voltage: 3.50, soc: 30 },
       { voltage: 3.40, soc: 15 },
       { voltage: 3.30, soc: 7 },
-      { voltage: 3.20, soc: -5 },
+      { voltage: 3.20, soc: '~5%' },
       { voltage: 3.00, soc: 0 }
     ],
     'LiPo': [
@@ -205,49 +205,49 @@ export default function BatteryVoltageTool() {
               </div>
             ) : currentBattery ? (
               <div className="space-y-4">
-                <div className="flex justify-between items-center py-2">
-                  <span className="text-gray-600 font-medium">Fully Discharged Voltage:</span>
+                <div className="flex justify-between items-center py-2 px-3 rounded-md bg-green-50">
+                  <span className="text-gray-600 font-medium">Charged Voltage:</span>
                   <span 
-                    className="text-gray-900 font-semibold"
-                    data-testid="text-fully-discharged-voltage"
+                    className="text-green-800 font-semibold"
+                    data-testid="text-charged-voltage"
                   >
-                    {currentBattery.emptyVoltage}V
+                    {currentBattery.fullVoltage}V
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-t border-gray-100">
-                  <span className="text-gray-600 font-medium">Advisable Discharge Voltage:</span>
-                  <span 
-                    className="text-gray-900 font-semibold"
-                    data-testid="text-advisable-discharge-voltage"
-                  >
-                    {getAdvisableDischargeVoltage(selectedChemistry, selectedCells)}V
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-2 border-t border-gray-100">
-                  <span className="text-gray-600 font-medium">Storage Voltage:</span>
-                  <span 
-                    className="text-gray-900 font-semibold"
-                    data-testid="text-storage-voltage"
-                  >
-                    {currentBattery.storageVoltage}V
-                  </span>
-                </div>
-                <div className="flex justify-between items-center py-2 border-t border-gray-100">
+                <div className="flex justify-between items-center py-2 px-3 rounded-md bg-purple-50">
                   <span className="text-gray-600 font-medium">Nominal Voltage:</span>
                   <span 
-                    className="text-gray-900 font-semibold"
+                    className="text-purple-800 font-semibold"
                     data-testid="text-nominal-voltage"
                   >
                     {currentBattery.nominalVoltage}V
                   </span>
                 </div>
-                <div className="flex justify-between items-center py-2 border-t border-gray-100">
-                  <span className="text-gray-600 font-medium">Charged Voltage:</span>
+                <div className="flex justify-between items-center py-2 px-3 rounded-md bg-blue-50">
+                  <span className="text-gray-600 font-medium">Storage Voltage:</span>
                   <span 
-                    className="text-gray-900 font-semibold"
-                    data-testid="text-charged-voltage"
+                    className="text-blue-800 font-semibold"
+                    data-testid="text-storage-voltage"
                   >
-                    {currentBattery.fullVoltage}V
+                    {currentBattery.storageVoltage}V
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-2 px-3 rounded-md bg-orange-50">
+                  <span className="text-gray-600 font-medium">Advisable Discharge Voltage:</span>
+                  <span 
+                    className="text-orange-800 font-semibold"
+                    data-testid="text-advisable-discharge-voltage"
+                  >
+                    {getAdvisableDischargeVoltage(selectedChemistry, selectedCells)}V
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-2 px-3 rounded-md bg-red-50">
+                  <span className="text-gray-600 font-medium">Fully Discharged Voltage:</span>
+                  <span 
+                    className="text-red-800 font-semibold"
+                    data-testid="text-fully-discharged-voltage"
+                  >
+                    {currentBattery.emptyVoltage}V
                   </span>
                 </div>
               </div>
