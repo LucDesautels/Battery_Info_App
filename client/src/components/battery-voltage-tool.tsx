@@ -56,7 +56,7 @@ export default function BatteryVoltageTool() {
   }
 
   return (
-    <main className="max-w-4xl mx-auto px-6 py-8">
+    <main className="max-w-4xl mx-auto px-6 py-8 pl-[0px] pr-[0px]">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Battery Chemistry Selection */}
         <Card>
