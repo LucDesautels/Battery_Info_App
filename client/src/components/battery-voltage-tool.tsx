@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { parseBatteryCSV } from '@/lib/csv-parser';
 import type { BatteryData, Chemistry, CellCount } from '@/types/battery';
 import { cn } from '@/lib/utils';
@@ -41,6 +42,72 @@ export default function BatteryVoltageTool() {
       'NiMH': 1.1
     };
     return (perCellVoltage[chemistry] * cellNumber).toFixed(1);
+  };
+
+  // Voltage to SOC data for each chemistry
+  const voltageSOCData = {
+    'Li-ion': [
+      { voltage: 4.20, soc: 100 },
+      { voltage: 4.10, soc: 95 },
+      { voltage: 4.00, soc: 90 },
+      { voltage: 3.90, soc: 80 },
+      { voltage: 3.80, soc: 70 },
+      { voltage: 3.70, soc: 60 },
+      { voltage: 3.60, soc: 45 },
+      { voltage: 3.50, soc: 30 },
+      { voltage: 3.40, soc: 15 },
+      { voltage: 3.30, soc: 7 },
+      { voltage: 3.20, soc: -5 },
+      { voltage: 3.00, soc: 0 }
+    ],
+    'LiPo': [
+      { voltage: 4.20, soc: 100 },
+      { voltage: 4.10, soc: 95 },
+      { voltage: 4.00, soc: 90 },
+      { voltage: 3.90, soc: 80 },
+      { voltage: 3.85, soc: 75 },
+      { voltage: 3.80, soc: 70 },
+      { voltage: 3.70, soc: 55 },
+      { voltage: 3.60, soc: 40 },
+      { voltage: 3.50, soc: 25 },
+      { voltage: 3.40, soc: 12 },
+      { voltage: 3.30, soc: -5 },
+      { voltage: 3.20, soc: 'near-empty' },
+      { voltage: 3.00, soc: 0 }
+    ],
+    'LiFePO4': [
+      { voltage: 3.65, soc: 100 },
+      { voltage: 3.40, soc: 90 },
+      { voltage: 3.30, soc: 70 },
+      { voltage: 3.25, soc: 50 },
+      { voltage: 3.20, soc: 30 },
+      { voltage: 3.10, soc: 15 },
+      { voltage: 3.00, soc: 7 },
+      { voltage: 2.80, soc: 0 }
+    ],
+    'NiMH': [
+      { voltage: 1.45, soc: 100 },
+      { voltage: 1.35, soc: 80 },
+      { voltage: 1.30, soc: 60 },
+      { voltage: 1.25, soc: 40 },
+      { voltage: 1.20, soc: 20 },
+      { voltage: 1.10, soc: 10 },
+      { voltage: 1.00, soc: 0 }
+    ]
+  };
+
+  // Commentary for each chemistry
+  const chemistryCommentary = {
+    'Li-ion': 'Lithium-ion (NMC/LCO/NCA, 3.6-3.7V nominal). In RC/drone use, people often treat 3.5V = "empty" under load to protect packs.',
+    'LiPo': 'Lithium-polymer (LiPo, pouch type, same chemistry as above). Voltages essentially identical to Li-ion, but hobbyists often keep a larger buffer for pack safety.',
+    'LiFePO4': 'Lithium iron phosphate (LiFePO4, 3.2V nominal). Very flat mid-range; voltage isn\'t as good an SoC indicator here.',
+    'NiMH': 'Nickel-metal hydride (NiMH, 1.2V nominal). Voltage is a poor % indicator - capacity is usually tracked by mAh in/out. But rough OCV estimates are possible.'
+  };
+
+  // Calculate voltage for specific cell count
+  const calculateVoltageForCells = (singleCellVoltage: number, cells: CellCount) => {
+    const cellNumber = parseInt(cells.replace('S', ''));
+    return (singleCellVoltage * cellNumber).toFixed(2);
   };
 
   if (error) {
@@ -191,6 +258,65 @@ export default function BatteryVoltageTool() {
             )}
           </CardContent>
         </Card>
+
+        {/* Battery % to Voltage Chart */}
+        <div className="lg:col-span-3 mt-8">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg font-medium text-gray-900">
+                Voltage %SOC (state of charge) <span className="font-bold">Estimation</span>
+              </CardTitle>
+              <p className="text-sm text-gray-600 mt-2">
+                {chemistryCommentary[selectedChemistry]}
+              </p>
+            </CardHeader>
+            <CardContent>
+              {isLoading ? (
+                <div className="space-y-3">
+                  {[...Array(6)].map((_, i) => (
+                    <div key={i} className="flex space-x-4">
+                      <Skeleton className="h-4 w-20" />
+                      <Skeleton className="h-4 w-20" />
+                      <Skeleton className="h-4 w-16" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="font-semibold">1S {selectedChemistry} Voltage</TableHead>
+                        <TableHead className="font-semibold">{selectedCells} {selectedChemistry} Voltage</TableHead>
+                        <TableHead className="font-semibold">%SOC</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {voltageSOCData[selectedChemistry].map((data, index) => (
+                        <TableRow key={index} className="hover:bg-gray-50">
+                          <TableCell className="font-mono">
+                            {data.voltage.toFixed(2)}V
+                          </TableCell>
+                          <TableCell className="font-mono">
+                            {calculateVoltageForCells(data.voltage, selectedCells)}V
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {typeof data.soc === 'number' ? `${data.soc}%` : data.soc}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                  {selectedChemistry === 'NiMH' && (
+                    <p className="text-xs text-gray-500 mt-2">
+                      Note: 1.45V represents fresh off charger with surface charge
+                    </p>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </main>
   );
