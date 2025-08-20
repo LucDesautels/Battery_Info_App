@@ -71,9 +71,9 @@ export default function BatteryVoltageTool() {
       { voltage: 3.60, soc: 40 },
       { voltage: 3.50, soc: 25 },
       { voltage: 3.40, soc: 12 },
-      { voltage: 3.30, soc: -5 },
-      { voltage: 3.20, soc: 'near-empty' },
-      { voltage: 3.00, soc: 0 }
+      { voltage: 3.30, soc: '~5%' },
+      { voltage: 3.20, soc: '0% Advisable discharge' },
+      { voltage: 3.00, soc: '0% Fully Discharged' }
     ],
     'LiFePO4': [
       { voltage: 3.65, soc: 100 },
@@ -294,13 +294,13 @@ export default function BatteryVoltageTool() {
                     <TableBody>
                       {voltageSOCData[selectedChemistry].map((data, index) => (
                         <TableRow key={index} className="hover:bg-gray-50">
-                          <TableCell className="font-mono">
+                          <TableCell>
                             {data.voltage.toFixed(2)}V
                           </TableCell>
-                          <TableCell className="font-mono">
+                          <TableCell>
                             {calculateVoltageForCells(data.voltage, selectedCells)}V
                           </TableCell>
-                          <TableCell className="font-medium">
+                          <TableCell>
                             {typeof data.soc === 'number' ? `${data.soc}%` : data.soc}
                           </TableCell>
                         </TableRow>
