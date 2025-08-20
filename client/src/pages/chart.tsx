@@ -96,7 +96,7 @@ export default function Chart() {
               <Card key={chemistry} className="shadow-md">
                 <CardHeader className="pb-4">
                   <div className="flex items-center gap-3">
-                    <Badge className={getChemistryColor(chemistry)}>{chemistry}</Badge>
+                    <Badge className={`${getChemistryColor(chemistry)} text-lg px-4 py-2 font-semibold`}>{chemistry}</Badge>
                   </div>
                 </CardHeader>
                 <CardContent>
