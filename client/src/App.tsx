@@ -34,7 +34,7 @@ function Header() {
                 )}
                 data-testid="tab-tool"
               >
-                Tool (tab that selects this)
+                Tool
               </a>
             </Link>
             <Link href="/chart">
@@ -47,7 +47,7 @@ function Header() {
                 )}
                 data-testid="tab-chart"
               >
-                Chart (tab goes to chart page)
+                Chart
               </a>
             </Link>
           </nav>

@@ -31,6 +31,18 @@ export default function BatteryVoltageTool() {
     return cellNumber >= 3;
   };
 
+  // Helper function to calculate advisable discharge voltage
+  const getAdvisableDischargeVoltage = (chemistry: Chemistry, cells: CellCount) => {
+    const cellNumber = parseInt(cells.replace('S', ''));
+    const perCellVoltage = {
+      'Li-ion': 3.2,
+      'LiPo': 3.2,
+      'LiFePO4': 2.8,
+      'NiMH': 1.1
+    };
+    return (perCellVoltage[chemistry] * cellNumber).toFixed(1);
+  };
+
   if (error) {
     return (
       <div className="max-w-4xl mx-auto px-6 py-8">
@@ -109,7 +121,7 @@ export default function BatteryVoltageTool() {
           <CardHeader>
             <CardTitle className="text-lg font-medium text-gray-900">
               <span data-testid="text-battery-display">
-                [{selectedCells}][{selectedChemistry}]
+                {selectedCells} {selectedChemistry}
               </span>{' '}
               Battery
             </CardTitle>
@@ -127,12 +139,21 @@ export default function BatteryVoltageTool() {
             ) : currentBattery ? (
               <div className="space-y-4">
                 <div className="flex justify-between items-center py-2">
-                  <span className="text-gray-600 font-medium">Discharged Voltage:</span>
+                  <span className="text-gray-600 font-medium">Fully Discharged Voltage:</span>
                   <span 
                     className="text-gray-900 font-semibold"
-                    data-testid="text-discharged-voltage"
+                    data-testid="text-fully-discharged-voltage"
                   >
                     {currentBattery.emptyVoltage}V
+                  </span>
+                </div>
+                <div className="flex justify-between items-center py-2 border-t border-gray-100">
+                  <span className="text-gray-600 font-medium">Advisable Discharge Voltage:</span>
+                  <span 
+                    className="text-gray-900 font-semibold"
+                    data-testid="text-advisable-discharge-voltage"
+                  >
+                    {getAdvisableDischargeVoltage(selectedChemistry, selectedCells)}V
                   </span>
                 </div>
                 <div className="flex justify-between items-center py-2 border-t border-gray-100">
